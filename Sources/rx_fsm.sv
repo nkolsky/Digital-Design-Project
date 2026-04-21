@@ -9,4 +9,15 @@ module rx_fsm (
     input logic [3:0] byte_cnt, //how many bytes read out of the 16 bytes in the message
     input logic sw15, //default to IDLE when low (in TX mode on low, RX mode on high)
 
-)endmodule : rx_fsm
+    //moore outputs
+    output logic clr_tick_cntr,
+    output logic run_tick_cntr,
+    output logic shift_en, 
+    output logic bit_cnt_en,
+    output logic byte_cnt_en,
+    output logic msg_reg_en,
+    output logic parse_en
+);    
+
+
+endmodule : rx_fsm
