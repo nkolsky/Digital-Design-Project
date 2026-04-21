@@ -19,5 +19,17 @@ module rx_fsm (
     output logic parse_en
 );    
 
+//Define internal signals
+rx_state_t cur_state, next_state;
+
+// State Transitions Logic (Sequential)
+always_ff @(posedge clk or negedge rst_n) begin
+    if(rst_n) begin
+        cur_state <= IDLE;
+    else
+        cur_state <= next_state;
+    end
+end
+
 
 endmodule : rx_fsm
