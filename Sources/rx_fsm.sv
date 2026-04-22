@@ -23,12 +23,16 @@ module rx_fsm (
 rx_state_t cur_state, next_state;
 
 // State Transitions Logic (Sequential)
-always_ff @(posedge clk or negedge rst_n) begin
+always_ff @(posedge clk or negedge rst_n) begin : rxStateTransition
     if(rst_n) begin
         cur_state <= IDLE;
-    else
+    end else
         cur_state <= next_state;
-    end
+end : rxStateTransition
+
+// Next State Logic (Combinational)
+always_comb begin : blockName
+    
 end
 
 
