@@ -24,7 +24,7 @@ rx_state_t cur_state, next_state;
 
 // State Transitions Logic (Sequential)
 always_ff @(posedge clk or negedge rst_n) begin : rxStateTransition
-    if(!rx_n) begin
+    if(!rx_in) begin
         cur_state <= IDLE;
     end else
         cur_state <= next_state;
@@ -74,6 +74,7 @@ always_comb begin : rx_nextStateLogic
         PARSE_DATA: begin
             
         end
+    endcase
     
 end : rx_nextStateLogic
 
