@@ -7,7 +7,7 @@ module rx_fsm (
     input logic rx_in, //serial data input
     input logic [2:0] bit_cnt, //bit count for current byte being received
     input logic [3:0] byte_cnt, //how many bytes read out of the 16 bytes in the message
-    input logic sw15, //default to IDLE when low (in TX mode on low, RX mode on high)
+    input logic sw[15], //default to IDLE when low (in TX mode on low, RX mode on high)
 
     //moore outputs
     output logic clr_tick_cntr,
@@ -31,9 +31,34 @@ always_ff @(posedge clk or negedge rst_n) begin : rxStateTransition
 end : rxStateTransition
 
 // Next State Logic (Combinational)
-always_comb begin : blockName
+always_comb begin : rx_nextStateLogic
+    next_state = cur_state; //default to hold state
+
+    case(cur_state)
+        IDLE: begin
+            if (sw[15] && !rx_in) //if in RX mode and start bit detected
+                next_state = VALIDATE_START;
+        end
+        VALIDATE_START: begin
+            
+        end
+        READ_TO_REG: begin
+            
+        end
+        VALIDATE_STOP: begin
+            
+        end
+        UPDATE_BYTE_CNT: begin
+            
+        end
+        INTER_BIT_DELAY: begin
+            
+        end
+        PARSE_DATA: begin
+            
+        end
     
-end
+end : rx_nextStateLogic
 
 
 endmodule : rx_fsm
