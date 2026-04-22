@@ -76,7 +76,11 @@ always_comb begin : rx_nextStateLogic
             
         end
         VALIDATE_STOP: begin
-            
+            if(tick == 4'd10) //we passed the middle of the stop bit, time to validate our shift reg
+                if(&stop_window) // if all bits in the stop_window are 1, then it's a valid stop bit
+                    next_state = UPDATE_BYTE_CNT;
+                else //if any bit in the stop_window is 0, then it's not a valid stop bit
+                    next_state = IDLE;
         end
         UPDATE_BYTE_CNT: begin
             
