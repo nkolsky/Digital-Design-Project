@@ -72,7 +72,7 @@ always_comb begin : rx_nextStateLogic
                 next_state = READ_TO_REG;
         end
         READ_TO_REG: begin
-            if(bit_cnt == 3'd7 && tick == 4'd8) //if we've read in all 8 bits of the byte and the tick counter is at the center of the bit period
+            if(bit_cnt == 3'd7 && tick == 4'd15) //if we've read in all 8 bits of the byte and the tick counter is at the center of the bit period
                 next_state = VALIDATE_STOP;
             
         end
@@ -128,26 +128,38 @@ always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
     
         case(cur_state)
             IDLE: begin
-                
+                clr_tick_cntr <= 1'b1; // Keep tick at 0 until start detected
             end
             VALIDATE_START: begin
-            
+                run_tick_cntr <= 1'b1; // Start counting ticks to validate start bit at the right time
+                //see start_window logic above for how we use the shift reg to validate the start bit at the right time
             end
             READ_TO_REG: begin
-                
-                
+                run_tick_cntr <= 1'b1; // Keep counting ticks to know when we're in the middle of the bit period
+
+                // Sample in the middle of the bit period (tick == 8) to shift in the bit to the message register and update the bit count
+                if (tick == 4'd8) begin
+                    shift_en <= 1'b1;
+                end
+                // Update bit count at the end of the bit period (tick == 15)
+                if(tick == 4'd15) begin
+                    bit_cnt_en <= 1'b1;
+                end
             end
             VALIDATE_STOP: begin
-                
+                run_tick_cntr <= 1'b1; // Start counting ticks to validate stop bit at the right time
+                //see stop_window logic above for how we use the shift reg to validate the stop bit
             end
             UPDATE_BYTE_CNT: begin
-                
+                byte_cnt_en <= 1'b1;
+                msg_reg_en <= 1'b1; //latch the byte we just received into the correct position in the message register
+                clr_tick_cntr <= 1'b1; //reset tick counter to prepare for validating the next start bit after the inter-bit delay
             end
             INTER_BIT_DELAY: begin
-            
+                clr_tick_cntr <= 1'b1; //keep tick counter at 0 while waiting for the inter-bit delay timer to finish
             end      
             PARSE_DATA: begin
-                
+                parse_en <= 1'b1; //enable the parsing of the message after we've received all 16 bytes
             end
         endcase
     end        
