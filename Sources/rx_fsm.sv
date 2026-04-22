@@ -59,7 +59,8 @@ always_comb begin : rx_nextStateLogic
                 next_state = READ_TO_REG;
         end
         READ_TO_REG: begin
-
+            if(bit_cnt == 3'd7 && tick == 4'd15) //if we've read in all 8 bits of the byte and the tick counter is at the end of the bit period
+                next_state = VALIDATE_STOP;
             
         end
         VALIDATE_STOP: begin
