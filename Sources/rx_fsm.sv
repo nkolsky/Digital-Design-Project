@@ -83,7 +83,11 @@ always_comb begin : rx_nextStateLogic
                     next_state = IDLE;
         end
         UPDATE_BYTE_CNT: begin
-            
+            byte_cnt_en = 1'b1; //enable counting the byte we just received
+            if(byte_cnt == 4'd15) //if we've received all 16 bytes in the message
+                next_state = PARSE_DATA;
+            else
+                next_state = INTER_BIT_DELAY; //otherwise we need to wait the inter-bit delay before looking for the next start bit
         end
         INTER_BIT_DELAY: begin
             
