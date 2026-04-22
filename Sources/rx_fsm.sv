@@ -84,7 +84,6 @@ always_comb begin : rx_nextStateLogic
                     next_state = IDLE;
         end
         UPDATE_BYTE_CNT: begin
-            byte_cnt_en = 1'b1; //enable counting the byte we just received
             if(byte_cnt == 4'd15) //if we've received all 16 bytes in the message
                 next_state = PARSE_DATA;
             else
