@@ -24,7 +24,7 @@ rx_state_t cur_state, next_state;
 
 // State Transitions Logic (Sequential)
 always_ff @(posedge clk or negedge rst_n) begin : rxStateTransition
-    if(rst_n) begin
+    if(!rx_n) begin
         cur_state <= IDLE;
     end else
         cur_state <= next_state;
@@ -38,9 +38,9 @@ always_ff @(posedge clk) begin : validateStartShiftReg
         start_window <= {start_window[1:0], rx_in};
     end else begin
         start_window <= 3'b111; //default to all 1s when not validating start bit
-    end: validateStartShiftReg
+    end
     
-end
+end : validateStartShiftReg
 
 // Next State Logic (Combinational)
 always_comb begin : rx_nextStateLogic
