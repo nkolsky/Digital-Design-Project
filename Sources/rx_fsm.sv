@@ -52,9 +52,14 @@ always_comb begin : rx_nextStateLogic
                 next_state = VALIDATE_START;
         end
         VALIDATE_START: begin
-            
+            if (tick == 4'd10) //we passed the middle of the start bit, time to validate our shift reg
+            if(|start_window) // if any bit in the start_window is 1, then it's not a valid start bit
+                next_state = IDLE;
+            else //if all bits in the start_window are 0, then it's a valid start bit
+                next_state = READ_TO_REG;
         end
         READ_TO_REG: begin
+
             
         end
         VALIDATE_STOP: begin
