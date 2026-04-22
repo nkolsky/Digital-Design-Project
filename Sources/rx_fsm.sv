@@ -25,7 +25,7 @@ rx_state_t cur_state, next_state;
 
 // State Transitions Logic (Sequential)
 always_ff @(posedge clk or negedge rst_n) begin : rxStateTransition
-    if(!rx_in) begin
+    if(!rst_n) begin
         cur_state <= IDLE;
     end else
         cur_state <= next_state;
