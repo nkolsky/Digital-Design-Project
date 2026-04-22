@@ -8,6 +8,7 @@ module rx_fsm (
     input logic [2:0] bit_cnt, //bit count for current byte being received
     input logic [3:0] byte_cnt, //how many bytes read out of the 16 bytes in the message
     input logic sw15, //default to IDLE when low (in TX mode on low, RX mode on high)
+    input logic timer_done, //indicates when the inter-bit delay timer has completed counting
 
     //moore outputs
     output logic clr_tick_cntr,
@@ -90,8 +91,13 @@ always_comb begin : rx_nextStateLogic
                 next_state = INTER_BIT_DELAY; //otherwise we need to wait the inter-bit delay before looking for the next start bit
         end
         INTER_BIT_DELAY: begin
-            
-            
+            if(timer_done)
+                if(!rx_in) //if the line is low after the inter-bit delay, that means the next start bit has already begun, so we can start validating it right away
+                    next_state = VALIDATE_START;
+                else //otherwise we go back to idle and wait for the next start bit
+                    next_state = IDLE;
+            else 
+                next_state = INTER_BIT_DELAY; //otherwise we stay in the inter-bit delay state until the timer is done    
         end
         PARSE_DATA: begin
             
