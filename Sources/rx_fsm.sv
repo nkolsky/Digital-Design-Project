@@ -30,6 +30,18 @@ always_ff @(posedge clk or negedge rst_n) begin : rxStateTransition
         cur_state <= next_state;
 end : rxStateTransition
 
+// Shift reg for validatingstart bit
+logic [2:0] start_window;
+
+always_ff @(posedge clk) begin : validateStartShiftReg
+    if (cur_state == VALIDATE_START) begin
+        start_window <= {start_window[1:0], rx_in};
+    end else begin
+        start_window <= 3'b111; //default to all 1s when not validating start bit
+    end: validateStartShiftReg
+    
+end
+
 // Next State Logic (Combinational)
 always_comb begin : rx_nextStateLogic
     next_state = cur_state; //default to hold state
