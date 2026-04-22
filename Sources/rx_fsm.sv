@@ -100,7 +100,8 @@ always_comb begin : rx_nextStateLogic
                 next_state = INTER_BIT_DELAY; //otherwise we stay in the inter-bit delay state until the timer is done    
         end
         PARSE_DATA: begin
-            
+            //check if its enough to pulse en_parse for one cycle here, or if we need to stay in this state until parsing is done
+            next_state = IDLE; //after parsing the data, we go back to idle and wait for the next message
         end
     endcase
     
