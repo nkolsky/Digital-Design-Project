@@ -42,6 +42,18 @@ always_ff @(posedge clk) begin : validateStartShiftReg
     
 end : validateStartShiftReg
 
+// Shift reg for validating stop bit
+logic [2:0] stop_window;
+
+always_ff @(posedge clk) begin : validateStopShiftReg
+    if (cur_state == VALIDATE_STOP) begin
+        stop_window <= {stop_window[1:0], rx_in};
+    end else begin
+        stop_window <= 3'b000; //default to all 0s when not validating stop bit
+    end
+    
+end : validateStopShiftReg
+
 // Next State Logic (Combinational)
 always_comb begin : rx_nextStateLogic
     next_state = cur_state; //default to hold state
