@@ -106,5 +106,52 @@ always_comb begin : rx_nextStateLogic
     
 end : rx_nextStateLogic
 
+//Moore Output Logic (Sequential)
+always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
+    if(!rst_n) begin //reset button asserted
+        clr_tick_cntr <= 1'b0;
+        run_tick_cntr <= 1'b0;
+        shift_en <= 1'b0;
+        bit_cnt_en <= 1'b0;
+        byte_cnt_en <= 1'b0;
+        msg_reg_en <= 1'b0;
+        parse_en <= 1'b0;
+    end else begin
+        // Default values (stay low unless explicitly set in a state)
+        clr_tick_cntr <= 1'b0;
+        run_tick_cntr <= 1'b0;
+        shift_en      <= 1'b0;
+        bit_cnt_en    <= 1'b0;
+        byte_cnt_en   <= 1'b0;
+        msg_reg_en    <= 1'b0;
+        parse_en      <= 1'b0;
+    
+        case(cur_state)
+            IDLE: begin
+                
+            end
+            VALIDATE_START: begin
+            
+            end
+            READ_TO_REG: begin
+                
+                
+            end
+            VALIDATE_STOP: begin
+                
+            end
+            UPDATE_BYTE_CNT: begin
+                
+            end
+            INTER_BIT_DELAY: begin
+            
+            end      
+            PARSE_DATA: begin
+                
+            end
+        endcase
+    end        
+end : rx_outputLogic
+
 
 endmodule : rx_fsm
