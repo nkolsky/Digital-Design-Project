@@ -102,6 +102,9 @@ always_comb begin : rx_nextStateLogic
             //check if its enough to pulse en_parse for one cycle here, or if we need to stay in this state until parsing is done
             next_state = IDLE; //after parsing the data, we go back to idle and wait for the next message
         end
+        default: begin
+            next_state = IDLE;
+        end
     endcase
     
 end : rx_nextStateLogic
