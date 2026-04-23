@@ -17,9 +17,11 @@ logic is_valid_msg;
 logic [23:0] pix_hundreds, pix_tens, pix_ones; //for converting pixel value from ASCII to binary
 
 always_comb begin : 
-    is_valid = (msg_in[127:120] == CHAR_OPEN_BRACE)   &&
+    is_valid = (msg_in[127:120]  == CHAR_OPEN_BRACE)  &&
                 (msg_in[119:112] == CHAR_R)           &&
+                (msg_in[87:80]   == CHAR_COMMA)       &&
                 (msg_in[79:72]   == CHAR_C)           &&
+                (msg_in[47:40]   == CHAR_COMMA)       &&
                 (msg_in[39:32]   == CHAR_V)           &&
                 (msg_in[7:0]     == CHAR_CLOSE_BRACE);
     //if the message format is correct, convert the pixel value, column index, and row index from ASCII to binary by subtracting the ASCII value for '0'
