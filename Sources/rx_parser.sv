@@ -16,7 +16,7 @@ logic is_valid_msg;
 //interbediate binary values
 logic [7:0] row_calc, col_calc, pix_calc;
 
-always_comb begin : 
+always_comb begin : validateParse
     is_valid_msg = (msg_in[127:120]  == CHAR_OPEN_BRACE)  &&
                 (msg_in[119:112] == CHAR_R)           &&
                 (msg_in[87:80]   == CHAR_COMMA)       &&
@@ -29,14 +29,14 @@ always_comb begin :
     col_calc = (msg_in[71:64] - ASCII_ZERO) * 100 + (msg_in[63:56] - ASCII_ZERO) * 10 + (msg_in[55:48] - ASCII_ZERO);
     pix_calc = (msg_in[31:24] - ASCII_ZERO) * 100 + (msg_in[23:16] - ASCII_ZERO) * 10 + (msg_in[15:8] - ASCII_ZERO);
 
-end
+end : validateParse
 
 always_ff @(posedge clk or negedge rst_n) begin : parseMessage
     if (!rst_n) begin
         pixel_val <= 8'b0;
         colIdx <= 8'b0;
         rowIdx <= 8'b0;
-    end else if (parse_en && is_valid) begin
+    end else if (parse_en && is_valid_msg) begin
         pixel_val <= pix_calc; //convert pixel value
         colIdx <= col_calc; //convert column index
         rowIdx <= row_calc; //convert row index
