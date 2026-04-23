@@ -140,7 +140,7 @@ always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
             READ_TO_REG: begin
                 run_tick_cntr <= 1'b1; // Keep counting ticks to know when we're in the middle of the bit period
 
-                // Sample in the middle of the bit period (tick == 8) to shift in the bit to the message register and update the bit count
+                // Sample in the middle of the bit period (tick == 8) to shift in the bit to the temporary byte shift register
                 if (tick == 4'd8) begin
                     shift_en <= 1'b1;
                 end
