@@ -7,7 +7,7 @@ module rx_parser (
     input logic parse_en, //enable signal for parsing the message, should only be high during the PARSE_DATA state of the FSM
     output logic [7:0] pixel_val, //Hex for T0
     output logic [7:0] colIdx, //T2
-    output logic [7:0] rowIdx, //T3
+    output logic [7:0] rowIdx //T3
 );
 
 //internal wire for checking if the message has the correct format before we parse out the data
