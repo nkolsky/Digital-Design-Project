@@ -36,7 +36,9 @@ logic [2:0] start_window;
 
 always_ff @(posedge clk) begin : validateStartShiftReg
     if (cur_state == VALIDATE_START) begin
-        start_window <= {start_window[1:0], rx_in};
+        if (tick == 4'd7 || tick == 4'd8 || tick == 4'd9) begin
+            start_window <= {start_window[1:0], rx_in};
+        end
     end else begin
         start_window <= 3'b111; //default to all 1s when not validating start bit
     end
@@ -48,7 +50,9 @@ logic [2:0] stop_window;
 
 always_ff @(posedge clk) begin : validateStopShiftReg
     if (cur_state == VALIDATE_STOP) begin
-        stop_window <= {stop_window[1:0], rx_in};
+        if (tick == 4'd7 || tick == 4'd8 || tick == 4'd9) begin
+            stop_window <= {stop_window[1:0], rx_in};
+        end
     end else begin
         stop_window <= 3'b000; //default to all 0s when not validating stop bit
     end
