@@ -8,7 +8,9 @@ module rx_fsm (
     input logic [2:0] bit_cnt, //bit count for current byte being received
     input logic [3:0] byte_cnt, //how many bytes read out of the 16 bytes in the message
     input logic sw15, //default to IDLE when low (in TX mode on low, RX mode on high)
-    input logic timer_done, //indicates when the inter-bit delay timer has completed counting
+    
+    //removing the line below because interbit delay is for tx, not rx
+    //input logic timer_done, //indicates when the inter-bit delay timer has completed counting
 
     //moore outputs
     output logic clr_tick_cntr,
@@ -91,9 +93,11 @@ always_comb begin : rx_nextStateLogic
             if(byte_cnt == 4'd15) //if we've received all 16 bytes in the message
                 next_state = PARSE_DATA;
             else
-                next_state = INTER_BIT_DELAY; //otherwise we need to wait the inter-bit delay before looking for the next start bit
+                next_state = IDLE; //if we haven't received all 16 bytes, we go back to idle and wait for the next start bit.
+                //removing the interbit delay
+                //next_state = INTER_BIT_DELAY; //otherwise we need to wait the inter-bit delay before looking for the next start bit
         end
-        INTER_BIT_DELAY: begin
+        /*INTER_BIT_DELAY: begin
             if(timer_done)
                 if(!rx_in) //if the line is low after the inter-bit delay, that means the next start bit has already begun, so we can start validating it right away
                     next_state = VALIDATE_START;
@@ -101,7 +105,7 @@ always_comb begin : rx_nextStateLogic
                     next_state = IDLE;
             else 
                 next_state = INTER_BIT_DELAY; //otherwise we stay in the inter-bit delay state until the timer is done    
-        end
+        end*/
         PARSE_DATA: begin
             //check if its enough to pulse en_parse for one cycle here, or if we need to stay in this state until parsing is done
             next_state = IDLE; //after parsing the data, we go back to idle and wait for the next message
