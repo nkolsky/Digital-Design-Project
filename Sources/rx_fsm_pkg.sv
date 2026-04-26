@@ -5,7 +5,7 @@ package rx_fsm_pkg;
         READ_TO_REG =       3'b010, 
         VALIDATE_STOP =     3'b011, 
         UPDATE_BYTE_CNT = 3'b100, 
-        PARSE_DATA =             3'b101, 
+        PARSE_DATA =             3'b101 
         //PARSE_DATA =        3'b110 - we removed the inter-bit delay state
         } rx_state_t;
 endpackage : rx_fsm_pkg
