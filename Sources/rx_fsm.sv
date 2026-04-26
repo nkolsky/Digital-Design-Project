@@ -65,7 +65,7 @@ end : validateStopShiftReg
 always_comb begin : rx_nextStateLogic
     next_state = cur_state; //default to hold state
 
-    case(cur_state)
+    unique case(cur_state)
         IDLE: begin
             if (sw15 && !rx_in) //if in RX mode and start bit detected
                 next_state = VALIDATE_START;
