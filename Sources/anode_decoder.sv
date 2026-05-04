@@ -25,9 +25,9 @@ module anode_decoder(
     output reg [7:0] an_out
     );
   
-always @(*) begin
+always_comb begin
     
-    case(bit_cnt) // select which 7-segment display
+    unique case(bit_cnt) // select which 7-segment display
         3'b000: an_out <= 8'b11111110; // 1
         3'b001: an_out <= 8'b11111101; // 2
         3'b010: an_out <= 8'b11111011; // 3

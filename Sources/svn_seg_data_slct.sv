@@ -15,7 +15,8 @@ module svn_seg_data_slct(
 );
 
 always_comb begin
-    decimal <= 1'b1; //default decimal off
+    decimal = 1'b1; //default decimal off
+    disp_val = 4'b1111; //default display off
     if (rx_mode)begin
         unique case (bit_cnt) 
             3'b000: begin
@@ -27,11 +28,11 @@ always_comb begin
             decimal = 1'b1;
             end
             3'b010: begin
-            disp_val = 8'b11111110; //display '-'
+            disp_val = 4'b0000; //display '-'
             decimal = 1'b1;
             end
             3'b011: begin
-            disp_val = 8'b11111110; //display '-'
+            disp_val = 4'b0000; //display '-'
             decimal = 1'b1;
             end
             3'b100: begin
@@ -55,36 +56,36 @@ always_comb begin
     else begin
         unique case(bit_cnt)
             3'b000: begin
-            disp_val <= data_val[3:0];
-            decimal <= 1'b1;
+            disp_val = data_val[3:0];
+            decimal = 1'b1;
             end
             3'b001: begin
-            disp_val <= data_val[7:4];
-            decimal <= 1'b1;
+            disp_val = data_val[7:4];
+            decimal = 1'b1;
             end
             3'b010: begin
-            disp_val <= speed_val[3:0];
-            decimal <= 1'b1;
+            disp_val = speed_val[3:0];
+            decimal = 1'b1;
             end
             3'b011: begin
-            disp_val <= speed_val[7:4];
-            decimal <= 1'b0;
+            disp_val = speed_val[7:4];
+            decimal = 1'b0;
             end
             3'b100: begin
-            disp_val <= size_val[3:0];
-            decimal <= 1'b1;
+            disp_val = size_val[3:0];
+            decimal = 1'b1;
             end
             3'b101: begin
-            disp_val <= size_val[7:4];
-            decimal <= 1'b1;
+            disp_val = size_val[7:4];
+            decimal = 1'b1;
             end
             3'b110: begin
-            disp_val <= row_val[3:0];
-            decimal <= 1'b1;
+            disp_val = row_val[3:0];
+            decimal = 1'b1;
             end
             3'b111: begin
-            disp_val <= row_val[7:4];
-            decimal <= 1'b1;
+            disp_val = row_val[7:4];
+            decimal = 1'b1;
             end
         endcase
     end

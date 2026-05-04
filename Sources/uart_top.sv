@@ -4,7 +4,8 @@ module uart_top (
     input logic rx_in,
     input logic rx_mode, // TX mode when low, RX mode when high
     input logic [7:0] data_out,
-
+    input logic [7:0] data_in, //latched data for tx mode
+    input logic data_ready, //en_read
     output logic [7:0] row_out,
     output logic [7:0] col_out,
     output logic [7:0] pix_out,

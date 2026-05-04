@@ -9,13 +9,14 @@
 
 module data_register(
     input clk, //system clock
-    input [14:0] switches,
+    input [15:0] switches,
     input reg_rst, //from 1 sec timer, resets the data register when the button is pushed, regardless of how long it is held for
     input en_data, //from 1 sec timer, allows data to flow through the latch when the button has been held for at least 1 second
     input en_config, //from 1 sec timer, pulses to open the configuration latch when the button has been held for at least 1 second, but only for one clock cycle
     output logic [7:0] latched_data,
     output reg [1:0] size_config, 
-    output logic [1:0]speed_config
+    output logic [1:0]speed_config,
+    output logic rx_mode
     );
 
 reg [1:0]size_reg;
@@ -27,12 +28,14 @@ always @(posedge clk) begin
         latched_data <= 8'h00;
         size_reg <= 2'b00;
         speed_config <= 2'b00;
+        rx_mode <= 1'b0;
         
     end else begin
         if (en_config) begin //config is asserted
         //capture current state of inputs
             size_reg <= switches[14:13];
             speed_config <= switches[9:8];
+            rx_mode <= switches[15]; //set rx_mode based on the 16th switch
         end 
         if (en_data) begin //data is asserted
             latched_data <= switches[7:0];

@@ -1,6 +1,5 @@
 module svn_seg_controller(
     input logic clk,
-    input logic rst_n,
     input logic [7:0] data_in,
     input logic rx_mode, // RX mode when high, TX mode when low
     input logic [7:0] tx_rows, // From byte_ctr.sv
@@ -16,9 +15,7 @@ module svn_seg_controller(
 
 // Internal signals
     logic [2:0] count_3bit;
-    logic clk_4khz_en;         // 500Hz * 8 digits = 4kHz enable pulse
     logic [3:0] hex_to_decode;
-    logic [7:0] active_t_group;
     logic dp_ctrl;             // Decimal point control
 
 //instantiate the three bit counter
