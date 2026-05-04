@@ -81,6 +81,16 @@ rx_msg_reg msg_reg_inst (
     .msg_out(msg_reg_128)
 );
 
+// Instantiate parser for extracting row, column, and pixel values from the message
+rx_parser parser_inst (
+    .clk(clk),
+    .rst_n(rst_n),
+    .msg_in(msg_reg_128),
+    .parse_en(parse_en),
+    .pixel_val(pix_out),
+    .colIdx(col_out),
+    .rowIdx(row_out)
+);
 
 
 endmodule
