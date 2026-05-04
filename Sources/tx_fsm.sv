@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+import tx_fsm_pkg::*;
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -111,45 +112,45 @@ typedef enum logic [3:0] {
         data_en = 1'b0;
         //en_timer = 1'b0; 
                
-       case(cur_state)
-            idle: if(en_data)begin
+       unique case(cur_state)
+            IDLE: if(en_data)begin
                 select_data = 2'b00;
                 data_en = 1'b1;
             end else begin
                 data_en = 1'b0;
             end 
-            send_data: begin 
+            SEND_DATA: begin 
                 en_timer = 1'b0; //turn off the delay timer being able to run
                 data_en = 1'b0;
             end
-            wait_data: if(tx_ready && row_end)begin
+            WAIT_DATA: if(tx_ready && row_end)begin
                 select_data = 2'b11;
                 data_en = 1'b1;
             end else if(tx_ready && !row_end)begin
                 select_data = 2'b01;
                 data_en = 1'b1;
             end 
-            send_new_line: begin
+            SEND_NEW_LINE: begin
                 data_en = 1'b0;
             end
-            wait_new_line: if(tx_ready)begin
+            WAIT_NEW_LINE: if(tx_ready)begin
                 select_data = 2'b10;
                 data_en = 1'b1;
             end
-            send_line_start: begin
+            SEND_LINE_START: begin
                 data_en = 1'b0;
             end
-            wait_line_start: if(tx_ready && !total_end)begin
+            WAIT_LINE_START: if(tx_ready && !total_end)begin
                 en_timer = 1'b1; //turn on the delay timer
                 data_en = 1'b1;
             end
-            wait_new_byte: if(timer_done)begin
+            WAIT_NEW_BYTE: if(timer_done)begin
                 data_en = 1'b0; //safety, so that we can turn data_en high b/c we are looking for posedge elsewhere
             end
-            send_space: begin
+            SEND_SPACE: begin
                 data_en = 1'b0;
             end 
-            wait_space: if(tx_ready)begin
+            WAIT_SPACE: if(tx_ready)begin
                 en_timer = 1'b1; //turn on the delay timer
                 data_en = 1'b1;
             end
