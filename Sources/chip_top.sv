@@ -169,34 +169,27 @@ speed_converter u_speed_converter(
 );
 
 //The following are for the 7 seg controller
-//three bit counter for 7 seg decoder
-thr_bit_cntr u_thr_bit_cntr(
+svn_seg_controller u_svn_seg_controller(
     .clk(CLK100MHZ),
-    .cnt_out(thr_bit_sel)
+    .rst_n(CPU_RESETN),
+    .data_in(data_out),
+    .rx_mode(1'b1), //always in RX mode because we want to display the data being sent
+    .tx_rows(cur_line),
+    .rx_pixel(data_out), //we can just use the output data as the pixel value since it holds the byte we want to display
+    .rx_col(size_converted), //display size config on col digits
+    .rx_row(speed_converted), //display speed config on row digits
+    .AN(AN),
+    .CA(CA),
+    .CB(CB),
+    .CC(CC),
+    .CD(CD),
+    .CE(CE),
+    .CF(CF),
+    .CG(CG),
+    .DP(DP)
 );
 
-//converts bits to relevant cathodes
-svn_seg_decoder u_svn_seg_decoder(
-    .disp_val(disp_data),
-    .dec_in(dis_dec),
-    //.bit_cnt(thr_bit_sel),
-    .seg_out({CA, CB, CC, CD, CE, CF, CG}),
-    .dec_out(DP)
-);
 
-anode_decoder u_anode_decoder(
-    .bit_cnt(thr_bit_sel),
-    .an_out(AN)
-);
 
-svn_seg_data_slct u_svn_seg_data_slct(
-    .data_val(data_out),
-    .row_val(cur_line),
-    .size_val(size_converted),
-    .speed_val(speed_converted),
-    .bit_cnt(thr_bit_sel),
-    .decimal(dis_dec),
-    .disp_val(disp_data)
-);
 
 endmodule
