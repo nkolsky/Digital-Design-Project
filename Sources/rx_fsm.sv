@@ -205,6 +205,8 @@ always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
             PARSE_DATA: begin
                 //enable the parsing of the message after we've received all 16 bytes
                 parse_en <= 1'b1;
+
+                clr_bit_cnt <= 1'b1; // Clear bit count at the end of a message
             end
         endcase
     end
