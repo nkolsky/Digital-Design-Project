@@ -13,8 +13,8 @@ module uart_rx (
 
 //internal signals
 logic tick;
-logic [2:0] b_cnt;
-logic [3:0] by_cnt;
+logic [2:0] bit_cnt;
+logic [3:0] byte_cnt;
 logic [7:0] rx_byte_captured;
 logic [127:0] msg_reg_128;
 
@@ -31,8 +31,19 @@ baud_gen baud_gen_inst (
     .clk(clk),
     .rst_n(rst_n),
     .rx_mode(rx_mode),
-    .tick(tick),
-    
+    .tick(tick), 
+);
+
+
+// Instantiate bit counter and byte counter
+rx_bit_cntr bit_cntr_inst (
+    .clk(clk),
+    .rst_n(rst_n),
+    .bit_cnt_en(bit_cnt_en),
+    .byte_cnt_en(byte_cnt_en),
+    .clr_bit_cnt(clr_bit_cnt),
+    .bit_cnt(bit_cnt),
+    .byte_cnt(byte_cnt)
 );
 
 
