@@ -66,7 +66,7 @@ module uart_tx(
         end
     end*/
     
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk or negedge rst) begin
         if (rst) begin
             led = 1'b0;
             tx_out = 1'b1;
