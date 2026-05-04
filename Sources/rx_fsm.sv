@@ -168,6 +168,7 @@ always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
         unique case(cur_state)
             IDLE: begin
                 clr_tick_cntr <= 1'b1; // Keep tick_q at 0 until start detected
+                clr_bit_cnt <= 1'b1; // Clear bit count at the beginning of a new message
             end
             VALIDATE_START: begin
                 run_tick_cntr <= 1'b1; // Start counting ticks to validate start bit at the right time
