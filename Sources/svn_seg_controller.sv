@@ -22,21 +22,22 @@ module svn_seg_controller(
     logic dp_ctrl;             // Decimal point control
 
 //instantiate the three bit counter
+
 thr_bit_cntr thr_bit_cntr_inst (
     .clk(clk),
-    .count_out(count_3bit)
+    .cnt_out(count_3bit)
 );
 
 //instantiate the data selection mux
 svn_seg_data_slct svn_seg_data_slct_inst (
-    .data_val(tx_rows),
-    .row_val(rx_row),
-    .size_val(rx_col),
-    .speed_val(rx_pixel),
+    .data_val(data_in),
+    .row_val(tx_rows), //current row in tx mode
+    .size_val(size_converted),
+    .speed_val(speed_converted),
     .bit_cnt(count_3bit),
-    .pixel_val(rx_pixel),
-    .col_val(rx_col),
-    .row_val(rx_row),
+    .rx_pixel(rx_pixel),
+    .rx_col(rx_col),
+    .rx_row(rx_row),
     .rx_mode(rx_mode),
     .decimal(dp_ctrl),
     .disp_val(hex_to_decode)
