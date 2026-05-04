@@ -16,14 +16,11 @@ localparam  DIV_TX= 1736; //100 MHz / 57.6 kHz = 1736.1, round down
 //calculated sys clk / (baud rate * 16)
 localparam DIV_RX = 109; //100 MHz / (57.6 kHz * 16) = 108.5, round up
 
-logic wire divisor;
-always_comb begin : div_select
-    if(rx_mode) begin
-        divisor = DIV_RX;
-    end else begin
-        divisor = DIV_TX;
-    end
-end : div_select
+
+logic [10:0]divisor;
+
+assign divisor = rx_mode ? DIV_RX : DIV_TX; //select divisor based on mode, we can use the same baud gen for both tx and rx by just changing the divisor
+
 //registers for counting
 
 
