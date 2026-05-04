@@ -12,7 +12,27 @@ module uart_rx (
 );
 
 //internal signals
+logic tick;
+logic [2:0] b_cnt;
+logic [3:0] by_cnt;
+logic [7:0] rx_byte_captured;
+logic [127:0] msg_reg_128;
 
+//control signals from the FSM
+logic shift_en;
+logic bit_cnt_en;
+logic byte_cnt_en;
+logic clr_bit_cnt;
+logic msg_reg_en;
+logic parse_en;
+
+// Instantiate baud rate generator
+baud_gen baud_gen_inst (
+    .clk(clk),
+    .rst_n(rst_n),
+    .tick(tick),
+    .rx_mode(rx_mode)
+);
 
 
 endmodule
