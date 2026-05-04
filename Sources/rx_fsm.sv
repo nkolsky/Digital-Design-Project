@@ -3,7 +3,7 @@ import rx_fsm_pkg::*;
 module rx_fsm (
     input logic clk,
     input logic rst_n,
-    input logic tick, //16x baud rate tick
+    input logic tick_q, //16x baud rate tick_q
     input logic rx_in, //serial data input
     input logic [2:0] bit_cnt, //bit count for current byte being received
     input logic [3:0] byte_cnt, //how many bytes read out of the 16 bytes in the message
@@ -25,16 +25,16 @@ module rx_fsm (
 //Define internal signals
 rx_state_t cur_state, next_state;
 
-//Create tick counter for validating start and stop bits
+//Create tick_q counter for validating start and stop bits
 logic [3:0] tick_q; //need to count up to 16 ticks (0-15) for validating start and stop bits and knowing when to shift in bits
 
 always_ff @(posedge clk or negedge rst_n) begin : tickCounter
     if (!rst_n) begin
         tick_q <= 4'b0;
-    end else if (tick) begin
+    end else if (tick_q) begin
         tick_q <= tick_q + 1;
     end else begin
-        tick_q <= tick_q; //hold value when tick is low
+        tick_q <= tick_q; //hold value when tick_q is low
     end
     
 end : tickCounter
@@ -53,7 +53,7 @@ logic [2:0] start_window;
 
 always_ff @(posedge clk) begin : validateStartShiftReg
     if (cur_state == VALIDATE_START) begin
-        if (tick == 4'd7 || tick == 4'd8 || tick == 4'd9) begin
+        if (tick_q == 4'd7 || tick_q == 4'd8 || tick_q == 4'd9) begin
             start_window <= {start_window[1:0], rx_in};
         end
     end else begin
@@ -67,7 +67,7 @@ logic [2:0] stop_window;
 
 always_ff @(posedge clk) begin : validateStopShiftReg
     if (cur_state == VALIDATE_STOP) begin
-        if (tick == 4'd7 || tick == 4'd8 || tick == 4'd9) begin
+        if (tick_q == 4'd7 || tick_q == 4'd8 || tick_q == 4'd9) begin
             stop_window <= {stop_window[1:0], rx_in};
         end
     end else begin
@@ -86,19 +86,19 @@ always_comb begin : rx_nextStateLogic
                 next_state = VALIDATE_START;
         end
         VALIDATE_START: begin
-            if (tick == 4'd10) //we passed the middle of the start bit, time to validate our shift reg
+            if (tick_q == 4'd10) //we passed the middle of the start bit, time to validate our shift reg
             if(|start_window) // if any bit in the start_window is 1, then it's not a valid start bit
                 next_state = IDLE;
             else //if all bits in the start_window are 0, then it's a valid start bit
                 next_state = READ_TO_REG;
         end
         READ_TO_REG: begin
-            if(bit_cnt == 3'd7 && tick == 4'd15) //if we've read in all 8 bits of the byte and the tick counter is at the center of the bit period
+            if(bit_cnt == 3'd7 && tick_q == 4'd15) //if we've read in all 8 bits of the byte and the tick_q counter is at the center of the bit period
                 next_state = VALIDATE_STOP;
             
         end
         VALIDATE_STOP: begin
-            if(tick == 4'd10) //we passed the middle of the stop bit, time to validate our shift reg
+            if(tick_q == 4'd10) //we passed the middle of the stop bit, time to validate our shift reg
                 if(&stop_window) // if all bits in the stop_window are 1, then it's a valid stop bit
                     next_state = UPDATE_BYTE_CNT;
                 else //if any bit in the stop_window is 0, then it's not a valid stop bit
@@ -154,7 +154,7 @@ always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
     
         case(cur_state)
             IDLE: begin
-                clr_tick_cntr <= 1'b1; // Keep tick at 0 until start detected
+                clr_tick_cntr <= 1'b1; // Keep tick_q at 0 until start detected
             end
             VALIDATE_START: begin
                 run_tick_cntr <= 1'b1; // Start counting ticks to validate start bit at the right time
@@ -163,12 +163,12 @@ always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
             READ_TO_REG: begin
                 run_tick_cntr <= 1'b1; // Keep counting ticks to know when we're in the middle of the bit period
 
-                // Sample in the middle of the bit period (tick == 8) to shift in the bit to the temporary byte shift register
-                if (tick == 4'd8) begin
+                // Sample in the middle of the bit period (tick_q == 8) to shift in the bit to the temporary byte shift register
+                if (tick_q == 4'd8) begin
                     shift_en <= 1'b1;
                 end
-                // Update bit count at the end of the bit period (tick == 15)
-                if(tick == 4'd15) begin
+                // Update bit count at the end of the bit period (tick_q == 15)
+                if(tick_q == 4'd15) begin
                     bit_cnt_en <= 1'b1;
                 end
             end
@@ -179,10 +179,10 @@ always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
             UPDATE_BYTE_CNT: begin
                 byte_cnt_en <= 1'b1;
                 msg_reg_en <= 1'b1; //latch the byte we just received into the correct position in the message register
-                clr_tick_cntr <= 1'b1; //reset tick counter to prepare for validating the next start bit after the inter-bit delay
+                clr_tick_cntr <= 1'b1; //reset tick_q counter to prepare for validating the next start bit after the inter-bit delay
             end
             INTER_BIT_DELAY: begin
-                clr_tick_cntr <= 1'b1; //keep tick counter at 0 while waiting for the inter-bit delay timer to finish
+                clr_tick_cntr <= 1'b1; //keep tick_q counter at 0 while waiting for the inter-bit delay timer to finish
             end      
             PARSE_DATA: begin
                 parse_en <= 1'b1; //enable the parsing of the message after we've received all 16 bytes
