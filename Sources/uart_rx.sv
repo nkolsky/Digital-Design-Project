@@ -71,6 +71,16 @@ rx_byte_shift_reg byte_shift_reg_inst (
     .byte_out(rx_byte_captured)
 );
 
+// Instantiate message register for storing the full 16-byte message
+rx_msg_reg msg_reg_inst (
+    .clk(clk),
+    .rst_n(rst_n),
+    .msg_reg_en(msg_reg_en),
+    .byte_in(rx_byte_captured),
+    .byte_cnt(byte_cnt),
+    .msg_out(msg_reg_128)
+);
+
 
 
 endmodule
