@@ -47,7 +47,7 @@ always_ff @(posedge clk or negedge rst_n) begin : parseMessage
         colIdx <= col_calc; //convert column index
         rowIdx <= row_calc; //convert row index
     end
-    
+
 end : parseMessage
 
 endmodule : rx_parser
