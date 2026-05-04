@@ -22,7 +22,7 @@
 
 module chip_top(
     input CLK100MHZ,
-    input [14:0] SW, // we ignore [12:10] and dont latch them
+    input [15:0] SW, // we ignore [12:10] and dont latch them
     input BTNC, //center push for 1 second to set to decimal
     input CPU_RESETN, //reset display to 0
     output [0:0] LED,
@@ -80,6 +80,11 @@ wire dis_dec;
 //Internal cables from three bit counter
 wire [2:0] thr_bit_sel;
 
+//Internal cables from uart_rx
+wire [7:0] rx_row;
+wire [7:0] rx_col;
+wire [7:0] rx_pixel;
+
 //One second counter triggered by button push
 one_sec_cntr u_one_sec_cntr (
     .clk(CLK100MHZ),
@@ -101,6 +106,17 @@ data_register u_data_register (
     .latched_data(data_latched),
     .size_config(size_latched),
     .speed_config(speed_latched)
+);
+
+//UART Top for updated UART_RTX controller
+uart_rx_ u_uart_rx (
+    .clk(CLK100MHZ),
+    .rst_n(timer_reg_rst),
+    .rx_in(UART_RXD_OUT),
+    .rx_mode(SW[15]), //always in TX mode since this is just the TX top
+    .row_out(rx_row),
+    .col_out(rx_col),
+    .pix_out(rx_pixel)
 );
 
 //counts how many bytes/rows of bytes in the square transmitted so far
@@ -128,6 +144,7 @@ delay_timer u_delay_timer (
 UART_PHY u_UART_PHY (
     .data(data_out),
     .clk(CLK100MHZ),
+    .rx_mode(SW[15]),
     .data_ready(u_data_ready),
     .en_data(en_read),
     .rst(timer_reg_rst),
@@ -173,11 +190,13 @@ svn_seg_controller u_svn_seg_controller(
     .clk(CLK100MHZ),
     .rst_n(CPU_RESETN),
     .data_in(data_out),
-    .rx_mode(1'b1), //always in RX mode because we want to display the data being sent
+    .rx_mode(SW[15]),
     .tx_rows(cur_line),
-    .rx_pixel(data_out), //we can just use the output data as the pixel value since it holds the byte we want to display
-    .rx_col(size_converted), //display size config on col digits
-    .rx_row(speed_converted), //display speed config on row digits
+    .rx_pixel(rx_pixel), //we can just use the output data as the pixel value since it holds the byte we want to display
+    .rx_col(rx_col), //display size config on col digits
+    .rx_row(rx_row), //display speed config on row digits
+    .speed_converted(speed_converted), //display converted speed on row digits when in TX mode
+    .size_converted(size_converted), //display converted size on col digits when in TX
     .anodes(AN),
     .cathodes({CA, CB, CC, CD, CE, CF, CG}),
     .dec_out(DP)

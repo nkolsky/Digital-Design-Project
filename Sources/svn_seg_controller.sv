@@ -7,6 +7,8 @@ module svn_seg_controller(
     input logic [7:0] rx_pixel,
     input logic [7:0] rx_col,
     input logic [7:0] rx_row,
+    input logic [7:0] speed_converted,
+    input logic [7:0] size_converted,
     output logic [7:0] anodes,     // Anodes (Active Low)
     output logic [6:0] cathodes, // CA, CB, CC, CD, CE, CF, CG, DP
     output logic dec_out // Decimal point output
