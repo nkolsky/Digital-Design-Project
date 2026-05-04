@@ -1,11 +1,11 @@
 `timescale 1ns / 1ps
 
-module UART_PHY(
+module uart_phy (
     input [7:0] data,
     input clk,
     input data_ready,
     input en_data,
-    input rst,
+    input rst_n,
     output logic tx_ready, //ready to recive data, goes low when data is being sent
     output logic led,
     output logic tx_out //the actual output to the UART, goes high when idle
@@ -21,8 +21,8 @@ module UART_PHY(
     initial led = 1'b0;
     initial tx_out = 1'b1;
     initial tx_ready = 1'b1;    
-    /*always @(negedge rst) begin
-        if (!rst) begin
+    /*always @(negedge rst_n) begin
+        if (!rst_n) begin
             led = 1'b0;
             tx_out = 1'b1;
             tx_ready = 1'b1;
@@ -46,8 +46,8 @@ module UART_PHY(
         end
     end*/
     
-    always @(posedge clk or negedge rst) begin
-        if (rst) begin
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
             led = 1'b0;
             tx_out = 1'b1;
             tx_ready = 1'b1;
