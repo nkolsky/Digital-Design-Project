@@ -3,7 +3,7 @@ import rx_fsm_pkg::*;
 module rx_fsm (
     input logic clk,
     input logic rst_n,
-    input logic [3:0] tick, //16x baud rate tick
+    input logic tick, //16x baud rate tick
     input logic rx_in, //serial data input
     input logic [2:0] bit_cnt, //bit count for current byte being received
     input logic [3:0] byte_cnt, //how many bytes read out of the 16 bytes in the message
@@ -13,8 +13,8 @@ module rx_fsm (
     //input logic timer_done, //indicates when the inter-bit delay timer has completed counting
 
     //moore outputs
-    output logic clr_tick_cntr,
-    output logic run_tick_cntr,
+    //output logic clr_tick_cntr,
+    //output logic run_tick_cntr,
     output logic shift_en, 
     output logic bit_cnt_en,
     output logic byte_cnt_en,
@@ -24,6 +24,21 @@ module rx_fsm (
 
 //Define internal signals
 rx_state_t cur_state, next_state;
+
+//Create tick counter for validating start and stop bits
+logic [3:0] tick_q; //need to count up to 16 ticks (0-15) for validating start and stop bits and knowing when to shift in bits
+
+always_ff @(posedge clk or negedge rst_n) begin : tickCounter
+    if (!rst_n) begin
+        tick_q <= 4'b0;
+    end else if (tick) begin
+        tick_q <= tick_q + 1;
+    end else begin
+        tick_q <= tick_q; //hold value when tick is low
+    end
+    
+end : tickCounter
+
 
 // State Transitions Logic (Sequential)
 always_ff @(posedge clk or negedge rst_n) begin : rxStateTransition
