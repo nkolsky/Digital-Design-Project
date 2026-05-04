@@ -31,7 +31,7 @@ logic [3:0] tick_q; //need to count up to 16 ticks (0-15) for validating start a
 always_ff @(posedge clk or negedge rst_n) begin : tickCounter
     if (!rst_n) begin
         tick_q <= 4'b0;
-    end else if (tick_q) begin
+    end else if (tick) begin
         tick_q <= tick_q + 1;
     end else begin
         tick_q <= tick_q; //hold value when tick_q is low
