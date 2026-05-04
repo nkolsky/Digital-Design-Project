@@ -30,8 +30,9 @@ logic parse_en;
 baud_gen baud_gen_inst (
     .clk(clk),
     .rst_n(rst_n),
+    .rx_mode(rx_mode),
     .tick(tick),
-    .rx_mode(rx_mode)
+    
 );
 
 
