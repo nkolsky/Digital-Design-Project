@@ -46,7 +46,7 @@ end : tickCounter
 // State Transitions Logic (Sequential)
 always_ff @(posedge clk or negedge rst_n) begin : rxStateTransition
     if(!rst_n) begin
-        cur_state <= IDLE;
+        cur_state <= RX_IDLE;
     end else
         cur_state <= next_state;
 end : rxStateTransition
@@ -84,14 +84,14 @@ always_comb begin : rx_nextStateLogic
     next_state = cur_state; //default to hold state
 
     unique case(cur_state)
-        IDLE: begin
+        RX_IDLE: begin
             if (rx_mode && !rx_in) //if in RX mode and start bit detected
                 next_state = VALIDATE_START;
         end
         VALIDATE_START: begin
             if (tick_q == 4'd10) begin//we passed the middle of the start bit, time to validate our shift reg
                 if(|start_window) begin// if any bit in the start_window is 1, then it's not a valid start bit
-                    next_state = IDLE;
+                    next_state = RX_IDLE;
                 end else begin//if all bits in the start_window are 0, then it's a valid start bit
                     next_state = READ_TO_REG;
                 end
@@ -108,7 +108,7 @@ always_comb begin : rx_nextStateLogic
                 if(&stop_window) begin// if all bits in the stop_window are 1, then it's a valid stop bit
                     next_state = UPDATE_BYTE_CNT;
                 end else begin//if any bit in the stop_window is 0, then it's not a valid stop bit
-                    next_state = IDLE;
+                    next_state = RX_IDLE;
                 end
             end
         end
@@ -117,7 +117,7 @@ always_comb begin : rx_nextStateLogic
                 next_state = PARSE_DATA;
             end else begin
                 //if we haven't received all 16 bytes, we go back to idle and wait for the next start bit.
-                next_state = IDLE;
+                next_state = RX_IDLE;
                 //removing the interbit delay
                 //next_state = INTER_BIT_DELAY; //otherwise we need to wait the inter-bit delay before looking for the next start bit
             end
@@ -127,17 +127,17 @@ always_comb begin : rx_nextStateLogic
                 if(!rx_in) //if the line is low after the inter-bit delay, that means the next start bit has already begun, so we can start validating it right away
                     next_state = VALIDATE_START;
                 else //otherwise we go back to idle and wait for the next start bit
-                    next_state = IDLE;
+                    next_state = RX_IDLE;
             else
                 next_state = INTER_BIT_DELAY; //otherwise we stay in the inter-bit delay state until the timer is done
         end*/
         PARSE_DATA: begin
             //check if its enough to pulse en_parse for one cycle here, or if we need to stay in this state until parsing is done
             //after parsing the data, we go back to idle and wait for the next message
-            next_state = IDLE;
+            next_state = RX_IDLE;
         end
         default: begin
-            next_state = IDLE;
+            next_state = RX_IDLE;
         end
     endcase
 
@@ -166,7 +166,7 @@ always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
         parse_en      <= 1'b0;
 
         unique case(cur_state)
-            IDLE: begin
+            RX_IDLE: begin
                 clr_tick_cntr <= 1'b1; // Keep tick_q at 0 until start detected
                 clr_bit_cnt <= 1'b1; // Clear bit count at the beginning of a new message
             end
