@@ -3,7 +3,7 @@ import rx_fsm_pkg::*;
 module rx_fsm (
     input logic clk,
     input logic rst_n,
-    input logic tick_q, //16x baud rate tick_q
+    input logic tick, //16x baud rate tick_q
     input logic rx_in, //serial data input
     input logic [2:0] bit_cnt, //bit count for current byte being received
     input logic [3:0] byte_cnt, //how many bytes read out of the 16 bytes in the message
