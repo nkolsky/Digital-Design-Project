@@ -34,6 +34,22 @@ baud_gen baud_gen_inst (
     .tick(tick), 
 );
 
+// Instantiate FSM
+rx_fsm rx_fsm_inst (
+    .clk(clk),
+    .rst_n(rst_n),
+    .tick(tick),
+    .rx_in(rx_in),
+    .bit_cnt(bit_cnt),
+    .byte_cnt(byte_cnt),
+    .rx_mode(rx_mode),
+    .clr_bit_cnt(clr_bit_cnt),
+    .shift_en(shift_en),
+    .bit_cnt_en(bit_cnt_en),
+    .byte_cnt_en(byte_cnt_en),
+    .msg_reg_en(msg_reg_en),
+    .parse_en(parse_en)
+);
 
 // Instantiate bit counter and byte counter
 rx_bit_cntr bit_cntr_inst (
@@ -45,6 +61,16 @@ rx_bit_cntr bit_cntr_inst (
     .bit_cnt(bit_cnt),
     .byte_cnt(byte_cnt)
 );
+
+// Instantiate shift register for capturing incoming bits into bytes
+rx_byte_shift_reg byte_shift_reg_inst (
+    .clk(clk),
+    .rst_n(rst_n),
+    .shift_en(shift_en),
+    .rx_in(rx_in),
+    .byte_out(rx_byte_captured)
+);
+
 
 
 endmodule
