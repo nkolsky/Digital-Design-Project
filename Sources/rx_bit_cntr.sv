@@ -3,6 +3,7 @@ module rx_bit_cntr (
     input logic rst_n,
     input logic bit_cnt_en,
     input logic byte_cnt_en,
+    input logic clr_bit_cnt,
     
     output logic [2:0] bit_cnt,
     output logic [3:0]byte_cnt
@@ -11,6 +12,8 @@ module rx_bit_cntr (
 //bit counter logic
 always_ff @(posedge clk or negedge rst_n) begin : bitCounter
     if (!rst_n) begin
+        bit_cnt <= 3'b0;
+    end else if (clr_bit_cnt) begin
         bit_cnt <= 3'b0;
     end else if (bit_cnt_en) begin
         bit_cnt <= bit_cnt + 1;
@@ -24,6 +27,8 @@ end : bitCounter
 always_ff @(posedge clk or negedge rst_n) begin : byteCounter
     if (!rst_n) begin
         byte_cnt <= 4'b0;
+    end else if (clr_bit_cnt) begin
+        byte_cnt <= 4'b0; //we can also clear the byte counter when we
     end else if (byte_cnt_en) begin
         byte_cnt <= byte_cnt + 1;
     end else begin
