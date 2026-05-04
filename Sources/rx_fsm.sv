@@ -194,10 +194,10 @@ always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
                 //reset tick_q counter to prepare for validating the next start bit after the inter-bit delay
                 clr_tick_cntr <= 1'b1;
             end
-            INTER_BIT_DELAY: begin
+            /*INTER_BIT_DELAY: begin
                 //keep tick_q counter at 0 while waiting for the inter-bit delay timer to finish
                 clr_tick_cntr <= 1'b1;
-            end
+            end*/
             PARSE_DATA: begin
                 //enable the parsing of the message after we've received all 16 bytes
                 parse_en <= 1'b1;
