@@ -31,7 +31,7 @@ baud_gen baud_gen_inst (
     .clk(clk),
     .rst_n(rst_n),
     .rx_mode(rx_mode),
-    .tick(tick)
+    .tick_16x(tick)
 );
 
 // Instantiate FSM
