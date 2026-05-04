@@ -7,7 +7,7 @@ module rx_fsm (
     input logic rx_in, //serial data input
     input logic [2:0] bit_cnt, //bit count for current byte being received
     input logic [3:0] byte_cnt, //how many bytes read out of the 16 bytes in the message
-    input logic sw15, //default to IDLE when low (in TX mode on low, RX mode on high)
+    input logic rx_mode, //default to IDLE when low (in TX mode on low, RX mode on high)
     
     //removing the line below because interbit delay is for tx, not rx
     //input logic timer_done, //indicates when the inter-bit delay timer has completed counting
@@ -67,7 +67,7 @@ always_comb begin : rx_nextStateLogic
 
     unique case(cur_state)
         IDLE: begin
-            if (sw15 && !rx_in) //if in RX mode and start bit detected
+            if (rx_mode && !rx_in) //if in RX mode and start bit detected
                 next_state = VALIDATE_START;
         end
         VALIDATE_START: begin
