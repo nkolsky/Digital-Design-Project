@@ -48,7 +48,7 @@ svn_seg_decoder svn_seg_decoder_inst (
 );
 
 //instantiate anode decoder
-svn_seg_anode_decoder svn_seg_anode_decoder_inst (
+anode_decoder anode_decoder_inst (
     .count(count_3bit),
     .anodes(AN)
 );
