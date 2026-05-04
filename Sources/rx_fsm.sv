@@ -25,8 +25,8 @@ rx_state_t cur_state, next_state;
 
 //Create tick_q counter for validating start and stop bits
 /**need to count up to 16 ticks (0-15) for validating start and stop bits and knowing when to shift in bits**/
-logic clr_tick_cntr;
 logic [3:0] tick_q;
+logic clr_tick_cntr;
 logic run_tick_cntr;
 always_ff @(posedge clk or negedge rst_n) begin : tickCounter
     if (!rst_n) begin
