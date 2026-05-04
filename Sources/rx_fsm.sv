@@ -88,11 +88,13 @@ always_comb begin : rx_nextStateLogic
                 next_state = VALIDATE_START;
         end
         VALIDATE_START: begin
-            if (tick_q == 4'd10) //we passed the middle of the start bit, time to validate our shift reg
-            if(|start_window) // if any bit in the start_window is 1, then it's not a valid start bit
-                next_state = IDLE;
-            else //if all bits in the start_window are 0, then it's a valid start bit
-                next_state = READ_TO_REG;
+            if (tick_q == 4'd10) begin//we passed the middle of the start bit, time to validate our shift reg
+                if(|start_window) begin// if any bit in the start_window is 1, then it's not a valid start bit
+                    next_state = IDLE;
+                end else begin//if all bits in the start_window are 0, then it's a valid start bit
+                    next_state = READ_TO_REG;
+                end
+            end
         end
         READ_TO_REG: begin
             //if we've read in all 8 bits of the byte and the tick_q counter is at the center of the bit period
@@ -101,20 +103,23 @@ always_comb begin : rx_nextStateLogic
 
         end
         VALIDATE_STOP: begin
-            if(tick_q == 4'd10) //we passed the middle of the stop bit, time to validate our shift reg
-                if(&stop_window) // if all bits in the stop_window are 1, then it's a valid stop bit
+            if(tick_q == 4'd10) begin//we passed the middle of the stop bit, time to validate our shift reg
+                if(&stop_window) begin// if all bits in the stop_window are 1, then it's a valid stop bit
                     next_state = UPDATE_BYTE_CNT;
-                else //if any bit in the stop_window is 0, then it's not a valid stop bit
+                end else begin//if any bit in the stop_window is 0, then it's not a valid stop bit
                     next_state = IDLE;
+                end
+            end
         end
         UPDATE_BYTE_CNT: begin
-            if(byte_cnt == 4'd15) //if we've received all 16 bytes in the message
+            if(byte_cnt == 4'd15) begin //if we've received all 16 bytes in the message
                 next_state = PARSE_DATA;
-            else
+            end else begin
                 //if we haven't received all 16 bytes, we go back to idle and wait for the next start bit.
                 next_state = IDLE;
                 //removing the interbit delay
                 //next_state = INTER_BIT_DELAY; //otherwise we need to wait the inter-bit delay before looking for the next start bit
+            end
         end
         /*INTER_BIT_DELAY: begin
             if(timer_done)
