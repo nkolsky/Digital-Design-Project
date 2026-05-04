@@ -16,6 +16,7 @@ module rx_fsm (
     output logic shift_en, 
     output logic bit_cnt_en,
     output logic byte_cnt_en,
+    output logic clr_bit_cnt,
     output logic msg_reg_en,
     output logic parse_en
 );
@@ -150,6 +151,7 @@ always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
         shift_en <= 1'b0;
         bit_cnt_en <= 1'b0;
         byte_cnt_en <= 1'b0;
+        clr_bit_cnt <= 1'b1;
         msg_reg_en <= 1'b0;
         parse_en <= 1'b0;
     end else begin
@@ -159,6 +161,7 @@ always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
         shift_en      <= 1'b0;
         bit_cnt_en    <= 1'b0;
         byte_cnt_en   <= 1'b0;
+        clr_bit_cnt   <= 1'b0;
         msg_reg_en    <= 1'b0;
         parse_en      <= 1'b0;
 
