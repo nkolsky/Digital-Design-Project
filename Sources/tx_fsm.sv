@@ -1,25 +1,5 @@
 `timescale 1ns / 1ps
 import tx_fsm_pkg::*;
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 04/09/2026 07:09:29 PM
-// Design Name: 
-// Module Name: tx_fsm
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module tx_fsm(
     input clk, rst,
@@ -32,19 +12,7 @@ module tx_fsm(
     output logic en_timer,
     output logic data_en
     );
-    
-typedef enum logic [3:0] {
-    idle = 4'd1, 
-    send_data = 4'd2, 
-    wait_data = 4'd3,
-    send_new_line = 4'd4, 
-    wait_new_line = 4'd5, 
-    send_line_start = 4'd6,
-    wait_line_start = 4'd7, 
-    wait_new_byte = 4'd8, 
-    send_space = 4'd9,
-    wait_space = 4'd10
-} state_t;
+
 
     initial begin
         select_data = 2'b00;
@@ -56,7 +24,7 @@ typedef enum logic [3:0] {
     
     //state reg sequential logic
     always @(posedge clk or posedge rst) begin
-        if (rst) cur_state <= idle;
+        if (rst) cur_state <= IDLE;
         else cur_state <= next_state;
     end
 
@@ -66,42 +34,42 @@ typedef enum logic [3:0] {
         next_state = cur_state;
 
         case(cur_state)
-            idle: if(en_data)begin
-                next_state = send_data;
+            IDLE: if(en_data)begin
+                next_state = SEND_DATA;
             end 
-            send_data: begin
-                next_state = wait_data; 
+            SEND_DATA: begin
+                next_state = WAIT_DATA; 
             end
-            wait_data: 
+            WAIT_DATA: 
                 if(tx_ready && row_end)begin
-                    next_state = send_new_line;
+                    next_state = SEND_NEW_LINE;
                 end else if(tx_ready && !row_end)begin
-                    next_state = send_space;
+                    next_state = SEND_SPACE;
             end 
-            send_new_line: begin
-                next_state = wait_new_line;
+            SEND_NEW_LINE: begin
+                next_state = WAIT_NEW_LINE;
             end
-            wait_new_line: if(tx_ready)begin
-                next_state = send_line_start;
+            WAIT_NEW_LINE: if(tx_ready)begin
+                next_state = SEND_LINE_START;
             end
-            send_line_start: begin
-                next_state = wait_line_start;
+            SEND_LINE_START: begin
+                next_state = WAIT_LINE_START;
             end
-            wait_line_start: if(tx_ready && !total_end)begin
-                next_state = wait_new_byte;
+            WAIT_LINE_START: if(tx_ready && !total_end)begin
+                next_state = WAIT_NEW_BYTE;
             end else if(tx_ready && total_end)begin
-                next_state = idle;
+                next_state = IDLE;
             end
-            wait_new_byte: if(timer_done)begin
-                next_state = send_data;
+            WAIT_NEW_BYTE: if(timer_done)begin
+                next_state = SEND_DATA;
             end
-            send_space: begin
-                next_state = wait_space;
+            SEND_SPACE: begin
+                next_state = WAIT_SPACE;
             end 
-            wait_space: if(tx_ready)begin
-                next_state = wait_new_byte;
+            WAIT_SPACE: if(tx_ready)begin
+                next_state = WAIT_NEW_BYTE;
             end  
-            default: next_state = idle;   
+            default: next_state = IDLE;   
         endcase
     end
 

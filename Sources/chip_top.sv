@@ -178,15 +178,9 @@ svn_seg_controller u_svn_seg_controller(
     .rx_pixel(data_out), //we can just use the output data as the pixel value since it holds the byte we want to display
     .rx_col(size_converted), //display size config on col digits
     .rx_row(speed_converted), //display speed config on row digits
-    .AN(AN),
-    .CA(CA),
-    .CB(CB),
-    .CC(CC),
-    .CD(CD),
-    .CE(CE),
-    .CF(CF),
-    .CG(CG),
-    .DP(DP)
+    .anodes(AN),
+    .cathodes({CA, CB, CC, CD, CE, CF, CG}),
+    .dec_out(DP)
 );
 
 

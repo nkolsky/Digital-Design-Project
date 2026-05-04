@@ -1,24 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 04/09/2026 02:55:54 PM
-// Design Name: 
-// Module Name: UART_PHY
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module UART_PHY(
     input [7:0] data,
@@ -66,7 +46,7 @@ module UART_PHY(
         end
     end*/
     
-    always @(posedge clk or posedge rst) begin
+    always @(posedge clk or negedge rst) begin
         if (rst) begin
             led = 1'b0;
             tx_out = 1'b1;
