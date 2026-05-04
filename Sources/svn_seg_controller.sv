@@ -53,8 +53,8 @@ svn_seg_decoder svn_seg_decoder_inst (
 
 //instantiate anode decoder
 anode_decoder anode_decoder_inst (
-    .count(count_3bit),
-    .anodes(anodes)
+    .bit_cnt(count_3bit),
+    .an_out(anodes)
 );
 
 //control logic to override the values in t1 and put dashes in rx mode
