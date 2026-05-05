@@ -134,7 +134,7 @@ tx_subsystem u_tx_subsystem (
     .speed_latched(speed_latched),
     .line_out(cur_line),
     .led(LED),
-    .tx_out(UART_RXD_OUT),
+    .tx_out(UART_RXD_OUT)
 );
 
 
