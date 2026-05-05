@@ -8,6 +8,7 @@ module tx_fsm(
     input timer_done,
     input row_end,
     input total_end,
+    input rx_mode,
     output reg [1:0] select_data,
     output logic en_timer,
     output logic data_en
@@ -23,8 +24,8 @@ module tx_fsm(
 tx_state_t cur_state, next_state;
     
     //state reg sequential logic
-    always @(posedge clk or posedge rst) begin
-        if (rst) cur_state <= IDLE;
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n || rx_mode) cur_state <= IDLE;
         else cur_state <= next_state;
     end
 
