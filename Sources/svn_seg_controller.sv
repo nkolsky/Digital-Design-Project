@@ -58,7 +58,7 @@ anode_decoder anode_decoder_inst (
 always_comb begin
     // If in RX mode and on the middle digits (T1 group: digits 2 and 3)
     if (rx_mode && (count_3bit == 3'b010 || count_3bit == 3'b011)) begin
-        cathodes = 7'b0111111; // Hardcoded Dash (Only G segment is 0/ON)
+        cathodes = 7'b1111110; // Hardcoded Dash (Only G segment is 0/ON)
     end else begin
         cathodes = decoded_cathodes; // Use normal hex-to-segment decoding
     end
