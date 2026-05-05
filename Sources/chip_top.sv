@@ -50,30 +50,19 @@ logic [1:0] size_latched; //size of square
 logic [1:0] speed_latched; //length of delay bt bytes
 logic rx_mode; //mode of the system, either RX or TX
 
-//Internal cables from byte counter
+//Internal cables from byte counter which is in tx_subsystem
 logic [7:0] cur_line; //current line of square of bytes
-logic row_fin; //finished the current row. ready for new line
-logic total_fin; //finished full byte square
 
-//Internal cables from delay timer
-logic timer_fin; //the delay time is complete
 
-//Internal Cables from UART PHY
-logic u_tx_ready; //tx ready for next byte
-
-//Internal cables from the byte selector mux
-logic [7:0] data_out; //byte to output
-
-//Internal cables from FSM
-//logic en_new_data;
-logic [1:0] byte_select; //selector for byte output mux
-logic u_data_ready; //we have data to send to tx serial line
 
 //Internal cables from size converter
 logic [7:0] size_converted;
 
 //Internal cables from speed converter
 logic [7:0] speed_converted;
+
+//internal cables from uart tx
+logic total_fin;
 
 //The following are for the 7 seg controller//
 //logic [3:0] disp_data;
@@ -127,12 +116,14 @@ uart_rx u_uart_rx (
 //instantiate tx subsystem
 tx_subsystem u_tx_subsystem (
     .clk(CLK100MHZ),
-    .rst_n(CPU_RESETN),
+    .rst_n(timer_reg_rst),
     .rx_mode(rx_mode),
     .data_latched(data_latched),
     .size_latched(size_latched),
     .speed_latched(speed_latched),
-    .line_out(cur_line),
+    .en_read(en_read),
+    .cur_line(cur_line),
+    .total_fin(total_fin),
     .led(LED),
     .tx_out(UART_RXD_OUT)
 );
@@ -154,7 +145,7 @@ speed_converter u_speed_converter(
 //The following are for the 7 seg controller
 svn_seg_controller u_svn_seg_controller(
     .clk(CLK100MHZ),
-    .data_in(data_out),
+    .data_in(data_latched),
     .rx_mode(rx_mode),
     .tx_rows(cur_line),
     .rx_pixel(rx_pixel), //we can just use the output data as the pixel value since it holds the byte we want to display

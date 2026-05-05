@@ -5,7 +5,9 @@ module tx_subsystem(
     input logic [2:0] speed_latched,
     input logic size_latched,
     input logic rx_mode,
-    output logic [7:0] line_out,
+    input logic en_read,
+    output logic [7:0] cur_line,
+    output logic total_fin,
     output logic led,
     output logic tx_out
 
@@ -14,38 +16,46 @@ module tx_subsystem(
 
 //internal logic
 
+
 //from the tx_fsm
-logic [1:0] select_data;
-logic en_timer;
-logic data_en;
+logic [1:0] byte_select;
+logic start_timer;
+logic data_ready;
 
 //from the delay timer
-logic timer_done;
+logic timer_fin;
 
-//to the data output mux
+//from the data output mux
 logic [7:0] data_out;
 
+//from the byte counter
+logic [7:0] cur_line;
+logic row_fin;
+logic total_fin;
 
-//from the byte counter 
+//from the uart tx
+logic tx_ready;
+logic led;
+logic tx_out;
 
-logic row_end;
-logic total_end;
+
+
 
 //instantiate the tx_fsm
-uart_tx_fsm uart_tx__fsminst (
+tx_fsm tx_fsm_inst (
     //inputs
     .clk(clk),
     .rst_n(rst_n),
     .tx_ready(tx_ready),
-    .en_data(en_data),
-    .timer_done(timer_done),
-    .row_end(row_end),
-    .total_end(total_end),
+    .en_data(en_read),
+    .timer_done(timer_fin),
+    .row_end(row_fin),
+    .total_end(total_fin),
     .rx_mode(rx_mode),
     //outputs
-    .select_data(select_data),
-    .en_timer(en_timer),
-    .data_en(data_en)
+    .select_data(byte_select),
+    .en_timer(start_timer),
+    .data_en(data_ready)
 
 );
 
@@ -54,16 +64,16 @@ delay_timer delay_timer_inst (
     //inputs
     .clk(clk),
     .speed_config(speed_latched),
-    .en_timer(en_timer),
+    .en_timer(start_timer),
     //output
-    .timer_done(timer_done)
+    .timer_done(timer_fin)
 );
 
 //instantiate the data output mux
 data_output_mux data_output_mux_inst (
     //inputs
     .data_in(data_latched),
-    .select(select_data),
+    .select(byte_select),
     //output
     .mux_out(data_out)
 );
@@ -73,12 +83,12 @@ byte_ctr byte_ctr_inst (
     //inputs
     .clk(clk),
     .rst_n(rst_n),
-    .byte_done(byte_done),
+    .byte_done(tx_ready),
     .size(size_latched),
     //outputs
-    .line_out(line_out),
-    .row_done(row_end),
-    .total_done(total_end)
+    .line_out(cur_line),
+    .row_done(row_fin),
+    .total_done(total_fin)
 );
 
 //instantiate the uart tx
@@ -86,8 +96,8 @@ uart_tx uart_tx_inst (
     //inputs
     .data(data_out),
     .clk(clk),
-    .data_ready(data_en),
-    .en_data(en_data),
+    .data_ready(data_ready),
+    .en_data(en_read),
     .rst_n(rst_n),
     //outputs
     .tx_ready(tx_ready),
