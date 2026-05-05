@@ -2,7 +2,8 @@
 import tx_fsm_pkg::*;
 
 module tx_fsm(
-    input clk, rst,
+    input clk, 
+    input rst_n,
     input tx_ready,
     input en_data,
     input timer_done,
