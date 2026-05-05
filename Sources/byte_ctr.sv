@@ -37,7 +37,7 @@ module byte_ctr(
     initial total_done <= 0;
 
 
-always_ff @(posedge clk or posedge rst_n) begin
+always_ff @(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
         line_out <= 8'd0;
         row_cnt <= 8'd0; //init reset counters
