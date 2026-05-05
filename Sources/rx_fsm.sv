@@ -13,6 +13,7 @@ module rx_fsm (
     //input logic timer_done, //indicates when the inter-bit delay timer has completed counting
 
     //moore outputs
+    output reg baud_start,
     output logic shift_en, 
     output logic bit_cnt_en,
     output logic byte_cnt_en,
@@ -46,8 +47,6 @@ end : tickCounter
 // State Transitions Logic (Sequential)
 always_ff @(posedge clk or negedge rst_n) begin : rxStateTransition
     if(!rst_n) begin
-        cur_state <= RX_IDLE;
-    end else if (!rx_mode) begin //if we're in TX mode, we want to stay in the IDLE state
         cur_state <= RX_IDLE;
     end else
         cur_state <= next_state;
@@ -145,6 +144,8 @@ always_comb begin : rx_nextStateLogic
 
 end : rx_nextStateLogic
 
+//this one needs to latch
+initial baud_start = 0;
 //Moore Output Logic (Sequential)
 always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
     if(!rst_n) begin //reset button asserted
@@ -171,10 +172,12 @@ always_ff @(posedge clk or negedge rst_n) begin : rx_outputLogic
             RX_IDLE: begin
                 clr_tick_cntr <= 1'b1; // Keep tick_q at 0 until start detected
                 clr_bit_cnt <= 1'b1; // Clear bit count at the beginning of a new message
+                baud_start <= 0; //stops the baud counter for the until startup
             end
             VALIDATE_START: begin
                 run_tick_cntr <= 1'b1; // Start counting ticks to validate start bit at the right time
                 //see start_window logic above for how we use the shift reg to validate the start bit at the right time
+                baud_start = 1; //starts the baud generator for the duration of the byte
             end
             READ_TO_REG: begin
                 // Keep counting ticks to know when we're in the middle of the bit period
