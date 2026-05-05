@@ -122,25 +122,7 @@ uart_rx u_uart_rx (
     .pix_out(rx_pixel)
 );
 
-//counts how many bytes/rows of bytes in the square transmitted so far
-//alerts when done with rows and square
-byte_ctr u_byte_ctr (
-    .clk(CLK100MHZ),
-    .byte_done(u_tx_ready),
-    .rst(timer_reg_rst),
-    .size(size_latched),
-    .line_out(cur_line),
-    .row_done(row_fin),
-    .total_done(total_fin)
-);
 
-//delay for set number of ms between bytes
-delay_timer u_delay_timer (
-    .clk(CLK100MHZ),
-    .speed_config(speed_latched),
-    .en_timer(start_timer),
-    .timer_done(timer_fin)
-);
 
 //instantiate tx subsystem
 tx_subsystem u_tx_subsystem (
@@ -155,39 +137,7 @@ tx_subsystem u_tx_subsystem (
     .tx_out(UART_RXD_OUT),
 );
 
-//sends data to tx serial line
-uart_tx u_uart_tx (
-    .data(data_out),
-    .clk(CLK100MHZ),
-    //.rx_mode(SW[15]),
-    .data_ready(u_data_ready),
-    .en_data(en_read),
-    .rst_n(timer_reg_rst),
-    .tx_ready(u_tx_ready),
-    .led(LED),
-    .tx_out(UART_RXD_OUT)
-);
 
-//selects what byte to output
-data_output_mux u_data_output_mux(
-    .data_in(data_latched),
-    .select(byte_select),
-    .mux_out(data_out)
-);
-
-tx_fsm u_tx_fsm (
-    .clk(CLK100MHZ),
-    .rst_n(timer_reg_rst),
-    .tx_ready(u_tx_ready),
-    .en_data(en_read),
-    .timer_done(timer_fin),
-    .row_end(row_fin),
-    .total_end(total_fin),
-    .select_data(byte_select),
-    .en_timer(start_timer),
-    .data_en(u_data_ready),
-    .rx_mode(rx_mode)
-);
 
 //converts size config to relative 8 bits for 7 seg
 size_converter u_size_converter (
