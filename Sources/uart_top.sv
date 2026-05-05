@@ -10,15 +10,15 @@ module uart_top (
     output logic [7:0] cur_line,
     output logic total_fin,
     output logic led,
-    output logic tx_out
+    output logic tx_out,
+    output logic [7:0] rx_row,
+    output logic [7:0] rx_col,
+    output logic [7:0] rx_pixel
 
 
 );
 
 //internal logic from rx
-logic [7:0] rx_row;
-logic [7:0] rx_col;
-logic [7:0] rx_pixel;
 logic led_rx;
 
 //internal logic from tx

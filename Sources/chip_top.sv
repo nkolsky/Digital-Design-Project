@@ -111,6 +111,9 @@ uart_top u_uart_top (
     .en_read(en_read),
     .cur_line(cur_line),
     .total_fin(total_fin),
+    .rx_row(rx_row),
+    .rx_col(rx_col),
+    .rx_pixel(rx_pixel),
     .led(LED[0]),
     .tx_out(UART_RXD_OUT)
 );
