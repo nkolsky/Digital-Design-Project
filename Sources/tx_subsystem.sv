@@ -32,7 +32,7 @@ logic row_end;
 logic total_end;
 
 //instantiate the tx_fsm
-uart_tx uart_tx_inst (
+uart_tx_fsm uart_tx__fsminst (
     //inputs
     .clk(clk),
     .rst_n(rst_n),
