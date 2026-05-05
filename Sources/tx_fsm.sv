@@ -78,7 +78,7 @@ tx_state_t cur_state, next_state;
         // Set default values for all outputs to avoid latches
         select_data = 2'b00;
         data_en = 1'b0;
-        en_timer = 1'b0; 
+        //en_timer = 1'b0; 
                
        unique case(cur_state)
             IDLE: if(en_data)begin
