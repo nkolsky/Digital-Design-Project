@@ -165,7 +165,7 @@ data_output_mux u_data_output_mux(
 
 tx_fsm u_tx_fsm (
     .clk(CLK100MHZ),
-    .rst(timer_reg_rst),
+    .rst_n(timer_reg_rst),
     .tx_ready(u_tx_ready),
     .en_data(en_read),
     .timer_done(timer_fin),
@@ -173,7 +173,8 @@ tx_fsm u_tx_fsm (
     .total_end(total_fin),
     .select_data(byte_select),
     .en_timer(start_timer),
-    .data_en(u_data_ready)
+    .data_en(u_data_ready),
+    .rx_mode(rx_mode)
 );
 
 //converts size config to relative 8 bits for 7 seg
