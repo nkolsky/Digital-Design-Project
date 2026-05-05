@@ -24,7 +24,7 @@
 module byte_ctr(
     input clk,
     input byte_done, //signal from FSM that we have sent a byte and can move to the next one,
-    input rst, //reset signal from 1 sec timer to reset the byte counter and line counter
+    input rst_n, //reset signal from 1 sec timer to reset the byte counter and line counter
     input [1:0] size,
     output reg [7:0] line_out,
     output reg row_done,
@@ -37,8 +37,8 @@ module byte_ctr(
     initial total_done <= 0;
 
 
-always_ff @(posedge clk or posedge rst) begin
-    if(rst) begin
+always_ff @(posedge clk or posedge rst_n) begin
+    if(!rst_n) begin
         line_out <= 8'd0;
         row_cnt <= 8'd0; //init reset counters
         clmn_cnt <= 8'd0; //init reset counters  
