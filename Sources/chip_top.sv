@@ -142,9 +142,21 @@ delay_timer u_delay_timer (
     .timer_done(timer_fin)
 );
 
+//instantiate tx subsystem
+tx_subsystem u_tx_subsystem (
+    .clk(CLK100MHZ),
+    .rst_n(CPU_RESETN),
+    .rx_mode(rx_mode),
+    .data_latched(data_latched),
+    .size_latched(size_latched),
+    .speed_latched(speed_latched),
+    .line_out(cur_line),
+    .led(LED),
+    .tx_out(UART_RXD_OUT),
+);
 
 //sends data to tx serial line
-uart_phy u_uart_phy (
+uart_tx u_uart_tx (
     .data(data_out),
     .clk(CLK100MHZ),
     //.rx_mode(SW[15]),
