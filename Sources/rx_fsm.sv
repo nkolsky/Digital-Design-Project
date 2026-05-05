@@ -47,6 +47,8 @@ end : tickCounter
 always_ff @(posedge clk or negedge rst_n) begin : rxStateTransition
     if(!rst_n) begin
         cur_state <= RX_IDLE;
+    end else if (!rx_mode) begin //if we're in TX mode, we want to stay in the IDLE state
+        cur_state <= RX_IDLE;
     end else
         cur_state <= next_state;
 end : rxStateTransition
