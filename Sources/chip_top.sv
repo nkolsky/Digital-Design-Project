@@ -100,7 +100,22 @@ data_register u_data_register (
     .rx_mode(rx_mode)
 );
 
-//UART Top for updated UART_RTX controller
+uart_top u_uart_top (
+    .clk(CLK100MHZ),
+    .rst_n(timer_reg_rst),
+    .rx_in(UART_TXD_IN),
+    .rx_mode(rx_mode),
+    .data_latched(data_latched),
+    .size_latched(size_latched),
+    .speed_latched(speed_latched),
+    .en_read(en_read),
+    .cur_line(cur_line),
+    .total_fin(total_fin),
+    .led(LED[0]),
+    .tx_out(UART_RXD_OUT)
+);
+
+/*//UART Top for updated UART_RTX controller
 uart_rx u_uart_rx (
     .clk(CLK100MHZ),
     .rst_n(timer_reg_rst),
@@ -126,7 +141,7 @@ tx_subsystem u_tx_subsystem (
     .total_fin(total_fin),
     .led(LED),
     .tx_out(UART_RXD_OUT)
-);
+);*/
 
 
 

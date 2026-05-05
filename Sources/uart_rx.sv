@@ -8,7 +8,8 @@ module uart_rx (
 
     output logic [7:0] row_out,
     output logic [7:0] col_out,
-    output logic [7:0] pix_out
+    output logic [7:0] pix_out,
+    output logic led
 );
 
 //internal signals
@@ -25,6 +26,11 @@ logic byte_cnt_en;
 logic clr_bit_cnt;
 logic msg_reg_en;
 logic parse_en;
+
+//internal logic for the LED
+logic led;
+
+assign led = rx_mode ? !byte_cnt[0] : 1'b0;
 
 // Instantiate baud rate generator
 baud_gen baud_gen_inst (
