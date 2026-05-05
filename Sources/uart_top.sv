@@ -1,39 +1,58 @@
 module uart_top (
-    input logic clk,
-    input logic rst_n,
-    input logic rx_in,
-    input logic rx_mode, // TX mode when low, RX mode when high
-    input logic [7:0] data_out,
-    input logic [7:0] data_in, //latched data for tx mode
-    input logic data_ready, //en_read
-    output logic [7:0] row_out,
-    output logic [7:0] col_out,
-    output logic [7:0] pix_out,
+    input clk,
+    input rst_n,
+    input rx_in,
+    input rx_mode,
+    input data_latched,
+    input size_latched,
+    input speed_latched,
+    input en_read,
+    output logic [7:0] cur_line,
+    output logic total_fin,
+    output logic led,
+    output logic tx_out
 
-    output logic tx_out,
-    output logic led
+
 );
 
-//instatiate the RX Module
-uart_rx uart_rx_inst (
+//internal logic from rx
+logic [7:0] rx_row;
+logic [7:0] rx_col;
+logic [7:0] rx_pixel;
+logic led_rx;
+
+//internal logic from tx
+logic led_tx;
+
+
+
+
+//UART rx instantiation
+uart_rx u_uart_rx (
     .clk(clk),
     .rst_n(rst_n),
     .rx_in(rx_in),
-    .rx_mode(rx_mode),
-    .row_out(row_out),
-    .col_out(col_out),
-    .pix_out(pix_out)
+    .rx_mode(rx_mode), //always in TX mode since this is just the TX top
+    .row_out(rx_row),
+    .col_out(rx_col),
+    .pix_out(rx_pixel),
+    .led(led_rx)
 );
 
-//instatiate the TX Module
-uart_tx uart_tx_inst (
-    .data(data_out), //concatenate row, col, and pix into a single 24 bit data bus for the TX module
+
+
+//instantiate tx subsystem
+tx_subsystem u_tx_subsystem (
     .clk(clk),
-    .data_ready(1'b1), //we can just tie data_ready high since we are always ready to send data as soon as we get it from the RX module
-    .en_data(1'b1), //we can also tie en_data high since we want to send data as soon as we get it from the RX module
-    .rst(rst_n), //active low reset for the TX module, so we need to invert rst_n
-    .tx_ready(), //we can ignore this signal since we are always ready to send data
-    .led(led),
+    .rst_n(rst_n),
+    .rx_mode(rx_mode),
+    .data_latched(data_latched),
+    .size_latched(size_latched),
+    .speed_latched(speed_latched),
+    .en_read(en_read),
+    .cur_line(cur_line),
+    .total_fin(total_fin),
+    .led(led_tx),
     .tx_out(tx_out)
 );
 
