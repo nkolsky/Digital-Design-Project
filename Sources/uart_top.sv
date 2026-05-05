@@ -24,6 +24,13 @@ logic led_rx;
 //internal logic from tx
 logic led_tx;
 
+always_comb begin : led_choice
+    if(rx_mode) begin
+        led = led_rx;
+    end else begin
+        led = led_tx;
+    end
+end : led_choice
 
 
 
