@@ -22,14 +22,14 @@
 
 module thr_bit_cntr(
     input clk,
-    output reg [2:0] cnt_out
+    output logic [2:0] cnt_out
     );
 
 	initial cnt_out = 3'b000; //set the counter to 0
     
-	wire [16:0] divisor = 2000000; // (1e9/5e2) --gives amount to divide clock by--
+	logic [16:0] divisor = 2000000; // (1e9/5e2) --gives amount to divide clock by--
 	
-	reg [16:0] count = 0;
+	logic [16:0] count = 0;
 	
 	always @(posedge clk) begin  //bring clock down to 500hz
 
