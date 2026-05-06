@@ -61,7 +61,7 @@ rx_fsm rx_fsm_inst (
 );
 
 // Instantiate bit counter and byte counter
-rx_bit_cntr bit_cntr_inst (
+rx_bit_cntr rx_bit_cntr_inst (
     .clk(clk),
     .rst_n(rst_n),
     .bit_cnt_en(bit_cnt_en),
