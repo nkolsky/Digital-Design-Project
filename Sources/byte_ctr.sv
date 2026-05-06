@@ -31,7 +31,7 @@ module byte_ctr(
     output logic total_done
     );
     
-    logic logic_name = value; [7:0] row_cnt; // counts how many 8 bit lines we have gotten, need max 5 bit for 32 (32*8 = 256)
+    logic [7:0] row_cnt; // counts how many 8 bit lines we have gotten, need max 5 bit for 32 (32*8 = 256)
     logic [7:0] clmn_cnt; //counts columns, need to count up to 256
     logic triggered = 1;
     initial total_done <= 0;
