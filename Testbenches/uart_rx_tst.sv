@@ -25,9 +25,25 @@ uart_rx uart_rx_tb(
     .led(led)
 );
 
+task automatic send_byte (input logic [7:0] byte_in);
+    rx_in = 0;
+    #1736;
+    for (int i = 0; i < 8; i++) begin
+        rx_in = byte_in[i];
+        #1736;
+    end 
+    rx_in = 1;
+    #1736;
+endtask : send_byte
+
 initial begin
     #5;
-    rx_mode = 1; rx_in = 0;
+    rx_mode = 1;
+    send_byte(8'h7B);
+    send_byte(8'h52);
+    send_byte(8'h30);
+    send_byte(8'h31);
+    send_byte(8'h32);
 end
 
 endmodule
