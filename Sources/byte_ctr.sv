@@ -33,7 +33,7 @@ module byte_ctr(
     
     logic [7:0] row_cnt; // counts how many 8 bit lines we have gotten, need max 5 bit for 32 (32*8 = 256)
     logic [7:0] clmn_cnt; //counts columns, need to count up to 256
-    logic triggered = 1;
+    logic trigger = 1;
     initial total_done <= 0;
 
 
@@ -44,10 +44,10 @@ always_ff @(posedge clk or negedge rst_n) begin
         clmn_cnt <= 8'd0; //init reset counters  
         row_done <= 1'b0;
         total_done <= 1'b0;
-        triggered <= 1;
+        trigger <= 1;
     end
-    else if (byte_done && !total_done && !triggered) begin 
-        triggered <= 1;
+    else if (byte_done && !total_done && !trigger) begin 
+        trigger <= 1;
         case(size)
             2'b00: //1 line
             begin //imediately send that we are done
@@ -116,7 +116,7 @@ always_ff @(posedge clk or negedge rst_n) begin
         endcase                                       
     end 
     else if (!byte_done) begin
-        triggered <= 0;
+        trigger <= 0;
     end
 end  
 
