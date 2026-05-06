@@ -26,14 +26,14 @@ module byte_ctr(
     input byte_done, //signal from FSM that we have sent a byte and can move to the next one,
     input rst_n, //reset signal from 1 sec timer to reset the byte counter and line counter
     input [1:0] size,
-    output reg [7:0] line_out,
-    output reg row_done,
-    output reg total_done
+    output logic [7:0] line_out,
+    output logic row_done,
+    output logic total_done
     );
     
-    reg [7:0] row_cnt; // counts how many 8 bit lines we have gotten, need max 5 bit for 32 (32*8 = 256)
-    reg [7:0] clmn_cnt; //counts columns, need to count up to 256
-    reg triggered = 1;
+    logic logic_name = value; [7:0] row_cnt; // counts how many 8 bit lines we have gotten, need max 5 bit for 32 (32*8 = 256)
+    logic [7:0] clmn_cnt; //counts columns, need to count up to 256
+    logic triggered = 1;
     initial total_done <= 0;
 
 
