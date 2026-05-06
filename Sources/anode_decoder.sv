@@ -22,7 +22,7 @@
 
 module anode_decoder(
     input [2:0] bit_cnt,
-    output reg [7:0] an_out
+    output logic [7:0] an_out
     );
   
 always_comb begin
