@@ -30,18 +30,13 @@ initial clk = 0;
 always #5 clk = ~clk;
 
 //task for start baud_gen
-task automatic tick_cntrl(input logic pwr);
+task automatic wait_baud();
     tick = 0;
-    forever begin
-        if (pwr) begin
-            #109 tick = 1;
-            #10  tick = 0;
-        end else begin
-            tick = 0;
-            @(posedge pwr);    // sleep until pwr goes high
-        end
+    for (int i = 0; i < 16; i++) begin
+        #109 tick = 1;
+        #10  tick = 0;
     end
-endtask : tick_cntrl
+endtask : wait_baud
 
 //initiallize a bunch of inputs
 initial begin
@@ -71,41 +66,46 @@ rx_fsm rx_fsm_tb(
 initial begin
     rx_mode = 1;
     #5;
-    rx_in = 0; 
-    fork 
-        tick_cntrl(1); //start bit
-    join_none
-    #1736;
-     rx_in = 1;
-    bit_cnt = bit_cnt + 1;
-    #1736;
-     rx_in = 0;
-    bit_cnt = bit_cnt + 1;
-    #1736;
-     rx_in = 0;
-    bit_cnt = bit_cnt + 1;
-    #1736;
-     rx_in = 1;
-    bit_cnt = bit_cnt + 1;
-    #1736;
-     rx_in = 0;
-    bit_cnt = bit_cnt + 1;
-    #1736;
-     rx_in = 1;
-    bit_cnt = bit_cnt + 1;
-    #1736;
-     rx_in = 1;
-    bit_cnt = bit_cnt + 1;
-    #1736;
-     rx_in = 0;
-    bit_cnt = bit_cnt + 1;
-    #1736;
-     rx_in = 1;
-    bit_cnt = bit_cnt + 1;  //end bit
-    #1736;
-    fork
-        tick_cntrl(0);
-    join_none
+    rx_in = 0;  //start bit 
+    wait_baud;
+    input_bit(1);
+    wait_baud;
+    input_bit(0);
+    wait_baud;
+    input_bit(0);
+    wait_baud;
+    input_bit(1);
+    wait_baud;
+    input_bit(0);
+    wait_baud;
+    input_bit(1);
+    wait_baud;
+    input_bit(1);
+    wait_baud;
+    input_bit(0);
+    wait_baud;
+    input_bit(1);  //end bit
+    wait_baud;
+    //second bit
+    rx_in = 0;  //start bit     
+    wait_baud;
+    input_bit(1);
+    wait_baud;
+    input_bit(0);
+    wait_baud;
+    input_bit(0);
+    wait_baud;
+    input_bit(1);
+    wait_baud;
+    input_bit(0);
+    wait_baud;
+    input_bit(1);
+    wait_baud;
+    input_bit(1);
+    wait_baud;
+    input_bit(0);
+    wait_baud;
+    input_bit(1);  //end bit
 end
 
 endmodule
