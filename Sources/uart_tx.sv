@@ -11,9 +11,9 @@ module uart_tx (
     output logic tx_out //the actual output to the UART, goes high when idle
     );
     
-    wire [14:0] divisor = 15'd1736; //clk divided by this gives a rate of 57600, our baud rate    
-    reg [14:0] count = 0;
-    reg [3:0] counter = 0; //counter for moving through the 8 bits of data we get
+    logic [14:0] divisor = 15'd1736; //clk divided by this gives a rate of 57600, our baud rate    
+    logic [14:0] count = 0;
+    logic [3:0] counter = 0; //counter for moving through the 8 bits of data we get
 
     logic run = 0;
     
