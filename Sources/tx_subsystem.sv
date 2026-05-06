@@ -2,10 +2,11 @@ module tx_subsystem(
     input logic clk,
     input logic rst_n,
     input logic [7:0] data_latched,
-    input logic [2:0] speed_latched,
-    input logic size_latched,
+    input logic [1:0] speed_latched,
+    input logic [1:0]size_latched,
     input logic rx_mode,
     input logic en_read,
+    
     output logic [7:0] cur_line,
     output logic total_fin,
     output logic led,
