@@ -13,7 +13,7 @@ module rx_fsm (
     //input logic timer_done, //indicates when the inter-bit delay timer has completed counting
 
     //moore outputs
-    output reg baud_start,
+    output logic baud_start,
     output logic shift_en, 
     output logic bit_cnt_en,
     output logic byte_cnt_en,
