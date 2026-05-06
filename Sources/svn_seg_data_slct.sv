@@ -49,7 +49,7 @@ always_comb begin
             end
             3'b111: begin
             disp_val = rx_row[7:4];
-            decimal = 1'b0;
+            decimal = 1'b1;
             end
         endcase
     end
