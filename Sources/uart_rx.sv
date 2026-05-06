@@ -18,6 +18,7 @@ logic [2:0] bit_cnt;
 logic [3:0] byte_cnt;
 logic [7:0] rx_byte_captured;
 logic [127:0] msg_reg_128;
+logic baud_run;
 
 //control signals from the FSM
 logic shift_en;
@@ -37,6 +38,7 @@ baud_gen baud_gen_inst (
     .clk(clk),
     .rst_n(rst_n),
     .rx_mode(rx_mode),
+    .baud_start(baud_run),
     .tick(tick)
 );
 
@@ -50,6 +52,7 @@ rx_fsm rx_fsm_inst (
     .byte_cnt(byte_cnt),
     .rx_mode(rx_mode),
     .clr_bit_cnt(clr_bit_cnt),
+    .baud_start(baud_run),
     .shift_en(shift_en),
     .bit_cnt_en(bit_cnt_en),
     .byte_cnt_en(byte_cnt_en),
