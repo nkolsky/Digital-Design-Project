@@ -22,10 +22,10 @@
 //total_done is broken I think, probably rework trigger for count as well.
 
 module byte_ctr(
-    input clk,
-    input byte_done, //signal from FSM that we have sent a byte and can move to the next one,
-    input rst_n, //reset signal from 1 sec timer to reset the byte counter and line counter
-    input [1:0] size,
+    input logic clk,
+    input logic byte_done, //signal from FSM that we have sent a byte and can move to the next one,
+    input logic rst_n, //reset signal from 1 sec timer to reset the byte counter and line counter
+    input logic [1:0] size,
     output logic [7:0] line_out,
     output logic row_done,
     output logic total_done
