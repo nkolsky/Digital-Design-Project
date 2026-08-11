@@ -1,0 +1,71 @@
+module svn_seg_controller(
+    input logic clk,
+    input logic [7:0] data_in,
+    input logic rx_mode, // RX mode when high, TX mode when low
+    input logic [7:0] tx_rows, // From byte_ctr.sv
+    input logic [7:0] rx_pixel,
+    input logic [7:0] rx_col,
+    input logic [7:0] rx_row,
+    input logic [7:0] speed_converted,
+    input logic [7:0] size_converted,
+    output logic [7:0] anodes,     // Anodes (Active Low)
+    output logic [6:0] cathodes, // CA, CB, CC, CD, CE, CF, CG, DP
+    output logic dec_out // Decimal point output
+);
+
+// Internal signals
+    logic [2:0] count_3bit;
+    logic [3:0] hex_to_decode;
+    logic dp_ctrl;             // Decimal point control
+
+//instantiate the three bit counter
+
+thr_bit_cntr thr_bit_cntr_inst (
+    .clk(clk),
+    .cnt_out(count_3bit)
+);
+
+//instantiate the data selection mux
+svn_seg_data_slct svn_seg_data_slct_inst (
+    .data_val(data_in),
+    .row_val(tx_rows), //current row in tx mode
+    .size_val(size_converted),
+    .speed_val(speed_converted),
+    .bit_cnt(count_3bit),
+    .rx_pixel(rx_pixel),
+    .rx_col(rx_col),
+    .rx_row(rx_row),
+    .rx_mode(rx_mode),
+    .decimal(dp_ctrl),
+    .disp_val(hex_to_decode)
+);
+
+//instantiate the cathode decoder
+svn_seg_decoder svn_seg_decoder_inst (
+    .disp_val(hex_to_decode),
+    .dec_in(dp_ctrl),
+    .seg_out(decoded_cathodes),
+    .dec_out(decoded_dp)
+);
+
+//instantiate anode decoder
+anode_decoder anode_decoder_inst (
+    .bit_cnt(count_3bit),
+    .an_out(anodes)
+);
+
+//control logic to override the values in t1 and put dashes in rx mode
+always_comb begin
+    // If in RX mode and on the middle digits (T1 group: digits 2 and 3)
+    if (rx_mode && (count_3bit == 3'b010 || count_3bit == 3'b011)) begin
+        cathodes = 7'b1111110; // Hardcoded Dash (Only G segment is 0/ON)
+    end else begin
+        cathodes = decoded_cathodes; // Use normal hex-to-segment decoding
+    end
+    
+    // Connect the decimal point
+    dec_out = decoded_dp; 
+end
+
+endmodule
+

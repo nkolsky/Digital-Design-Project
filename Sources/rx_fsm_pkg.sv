@@ -1,6 +1,6 @@
 package rx_fsm_pkg;
     typedef enum logic [2:0] {
-        IDLE =              3'b000, 
+        RX_IDLE =              3'b000, 
         VALIDATE_START =    3'b001, 
         READ_TO_REG =       3'b010, 
         VALIDATE_STOP =     3'b011, 
